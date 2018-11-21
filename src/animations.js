@@ -13,6 +13,7 @@ for (let i = 0; i < 8; i++) {
                   }),
       frameRate: anims[motions[j]].frameRate,
       repeat: anims[motions[j]].repeat,
+      yoyo: anims[motions[j]].yoyo,
       })
     }
   }
@@ -35,13 +36,14 @@ var anims = {
     endFrame: 3,
     frameRate: 3,
     repeat: -1,
+    yoyo: true,
 
   },
   walk: {
     startFrame: 4,
     endFrame: 11,
     frameRate: 8,
-    repeat: 0,
+    repeat: -1,
   },
   attack: {
     startFrame: 12,
@@ -60,6 +62,7 @@ var anims = {
     endFrame: 32,
     frameRate: 5,
     repeat: 1,
+    yoyo: true,
   },
 };
 

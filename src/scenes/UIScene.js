@@ -6,8 +6,10 @@ export default class UIScene extends Phaser.Scene {
   }
   create() {
     this.timeText = this.add.text(0, 0);
+    console.log(this
+    );
   }
   update(time, delta) {
-    this.timeText.setText('Time: ' + time + '\nDelta: ' + delta);
+    this.timeText.setText(this);
   }
 };

@@ -13,8 +13,15 @@ class BootScene extends Phaser.Scene {
     });
   }
   preload() {
-    createAnimations(this);
-    this.scene.start('GameScene');
+    this.load.json('map', 'assets/isometric-grass-and-water.json');
+    this.load.spritesheet('tiles', 'assets/isometric-grass-and-water.png', { frameWidth: 64, frameHeight: 64 });
+    this.load.spritesheet('skeleton', 'assets/skeleton8.png', { frameWidth: 128, frameHeight: 128 });
+    this.load.image('house', 'assets/rem_0002.png');
+    this.load.image('star', 'assets/star.png');
+    this.load.on('complete', () => {
+      createAnimations(this);
+      this.scene.start('GameScene');
+    })
   }
 }
 

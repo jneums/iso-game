@@ -2,42 +2,44 @@ import CharacterSheet from './CharacterSheet.js';
 
 export default class Player extends CharacterSheet {
   constructor (scene, x, y, texture) {
-
     super(scene, x, y, texture);
 
-    this.startX = x;
-    this.startY = y;
-    this.setTexture(texture);
+    this.setScale(.75);
+
+    this.str = 19;
+    this.agi = 19;
 
 
     this.depth = y + 64;
 
     scene.add.existing(this);
     scene.physics.add.existing(this);
-
+    this.gameOver = false;
 
   };
 
-  meleeSwing(target) {
-    let atp = this.getAttackPower();
-    let dmg =Phaser.Math.Between(1,6)*atp ;
-    if(Phaser.Math.Between(0, 100) < 34) {
-      console.log('miss');
-    } else {
-      if(this.willCrit()) {
-        let crit = dmg * 2;
-        target.setCurrentHp(crit, 'melee')
-        console.log('crit for: ' + crit);
 
-      } else {
-        console.log('swing does: '+dmg);
-        target.setCurrentHp(dmg, 'melee');
-      }
-      console.log(target.getCurrentHps());
-    }
-    this.swingTimer = this.weaponTimer;
-  }
   update() {
+    if(!this.isDead()) {
+      if(this.isMoving) {
+        this.anims.play('walk'+this.getFacing(), true);
+      } else if(this.isInCombat()) {
+        if (Phaser.Math.Distance.Between(this.x, this.y, this.getCurrentTarget().x, this.getCurrentTarget().y) < 75 && this.isInCombat()) {
+          this.getCurrentTarget().setCurrentTarget(this);
 
+          this.swingTimer--;
+          if(this.swingTimer <= 0 && !this.currentTarget.isDead()) {
+            this.anims.play('attack'+this.getFacing())
+            this.meleeSwing(this.getCurrentTarget());
+          }
+        }
+      } else {
+        this.anims.play('idle'+this.getFacing(), true);
+      }
+    } else {
+      this.anims.play('die'+this.getFacing());
+      console.log("you died");
+      this.gameOver = true;
+    }
   }
 }

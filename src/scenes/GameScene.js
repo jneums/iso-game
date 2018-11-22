@@ -24,6 +24,7 @@ export default class GameScene extends Phaser.Scene {
     this.placeHouses();
 
 
+
     this.input.keyboard.on('keydown_SPACE', () => {
         this.player.anims.play('attack'+this.player.facing, true);
 
@@ -85,10 +86,9 @@ export default class GameScene extends Phaser.Scene {
 
     this.physics.add.overlap(this.player, this.skeletons, function (playerOnEnemy) {
       playerOnEnemy.body.stop()
-
+      playerOnEnemy.isMoving = false;
     }, null, this);
-    //player keeps getting stuck on corpses, needs collision turned
-    //off after death
+
 
 
     //used for testing

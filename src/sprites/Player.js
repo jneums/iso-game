@@ -8,16 +8,26 @@ export default class Player extends CharacterSheet {
 
     this.str = 19;
     this.agi = 19;
-
-
+    //TODO fix depth sorting, especially in map creator
     this.depth = y + 64;
 
     scene.add.existing(this);
     scene.physics.add.existing(this);
+    scene.registry.set('playerHps', this.currentHps);
     this.gameOver = false;
+    //initialize hp, updates ui right away.
+    this.setCurrentHp(0, 'heal');
 
   };
-
+  setCurrentHp(val, type) {
+    if (type === 'melee') {
+      console.log('type: melee');
+      this.currentHps -= val;
+    } else if (type === 'heal') {
+      this.currentHps += val;
+    }
+    this.scene.registry.set('playerHps', this.currentHps)
+  };
 
   update() {
     if(!this.isDead()) {

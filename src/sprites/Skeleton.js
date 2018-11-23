@@ -20,14 +20,12 @@ export default class Skeleton extends CharacterSheet {
     })
   };
 
-  idlingCallback() {
-    //TODO add pathing for NPCs
-    console.log("idling");
-  };
-
+  moveToAttacker(attacker) {
+    this.scene.physics.moveToObject(this, attacker, 100);
+  }
+  
   setCurrentHp(val, type) {
     if (type === 'melee') {
-      console.log('type: melee');
       this.currentHps -= val;
     } else if (type === 'heal') {
       this.currentHps += val;
@@ -35,18 +33,26 @@ export default class Skeleton extends CharacterSheet {
     this.scene.registry.set('targetHps', this.currentHps)
   };
 
+
   update() {
+    this.cooldowns.swing--;
+
+    if(Phaser.Math.Distance.Between(this.x, this.y, this.scene.player.x, this.scene.player.y) < 200) {
+      this.setInCombat(true);
+      this.setCurrentTarget(this.scene.player);
+    }
     if(this.isInCombat() && this.getCurrentTarget()) {
-      this.swingTimer--;
       this.setFacing(this.getRadsToCurrentTarget());
-      if(this.swingTimer <= 0) {
-        //TODO if swingtimer AND if in range
-        this.anims.play('attack'+this.getFacing())
-        this.meleeSwing(this.getCurrentTarget())
-      };
+      if(Phaser.Math.Distance.Between(this.x, this.y, this.getCurrentTarget().x, this.getCurrentTarget().y) > 75) {
+        this.walking();
+        this.moveToAttacker(this.getCurrentTarget());
+        this.depth = this.y + 64;
+      } else if(Phaser.Math.Distance.Between(this.x, this.y, this.getCurrentTarget().x, this.getCurrentTarget().y) < 75 && this.cooldowns.swing <= 0) {
+        this.meleeSwing(this.getCurrentTarget());
+      }
     } else {
-      this.anims.play('idle'+this.getFacing(), true)
-      this.idling;
+      this.idle();
+
     }
 
   }

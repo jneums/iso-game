@@ -18,45 +18,23 @@ export default class GameScene extends Phaser.Scene {
   preload () {
 
   }
+
   create () {
     this.scene = this.scene.scene
     this.buildMap();
     this.placeHouses();
-
-
-
-    this.input.keyboard.on('keydown_SPACE', () => {
-        this.player.anims.play('attack'+this.player.facing, true);
-
-    });
-
-    for(let i = 0; i<9; i++) {
-      this.skeletons.push(this.scene.add.existing(new Skeleton(this, Phaser.Math.Between(300,1200), Phaser.Math.Between(100, 500), 'skeleton')));
-    }
-
-    this.player = new Player(this, 800, 364, 'skeleton')
-    this.player.setCircle(20, 40, 60)
-    this.scene.cameras.main.startFollow(this.player).setZoom(1)
+    this.addPlayer();
+    this.addEnemies();
 
     this.moveTarget = this.physics.add.image(25, 25, 'star');
     this.moveTarget.setCircle(20, 0, -5).setVisible(false).setScale(.75);
 
     //move target and start moving toward new pos
     this.input.on('pointerdown', function (pointer) {
-
       //scroll plus pointer.x to compensate for follow cam cooords
       let pointerPlusScrollX = pointer.x+this.cameras.cameras[0].scrollX;
       let pointerPlusScrollY = pointer.y+this.cameras.cameras[0].scrollY;
       let angle = Phaser.Math.Angle.BetweenY(this.player.x, this.player.y, pointerPlusScrollX, pointerPlusScrollY);
-
-
-      //deselects current target
-      //TODO hide enemy hp bar when no current target
-      if(this.player.getCurrentTarget()) {
-        this.player.clearCurrentTarget();
-      };
-
-      this.player.setInCombat(false);
 
       this.moveTarget.setPosition(pointerPlusScrollX, pointerPlusScrollY )
 
@@ -65,22 +43,7 @@ export default class GameScene extends Phaser.Scene {
       this.player.isMoving = true;
     }, this);
 
-    this.skeletons.map((child) => {
-      child.setCircle(30, 35, 60)
-      child.on('clicked', clickHandler, this);
-    });
 
-    this.input.on('gameobjectup', function (pointer, gameObject) {
-      gameObject.emit('clicked', gameObject);
-    }, this);
-
-    //if enemy is clicked
-    function clickHandler(enemy) {
-      this.player.setCurrentTarget(enemy);
-      enemy.setCurrentHp(0, 'heal');
-      this.player.setInCombat(true);
-      enemy.setInCombat(true);
-    };
 
     //stop the player at the moveTarget, or at the hitbox of the enemy
     this.physics.add.overlap(this.player, this.moveTarget, function (playerOnMoveTarget) {
@@ -88,12 +51,17 @@ export default class GameScene extends Phaser.Scene {
       playerOnMoveTarget.body.stop();
     }, null, this);
 
-    this.physics.add.overlap(this.player, this.skeletons, function (playerOnEnemy) {
+    this.physics.add.overlap(this.skeletons, this.player, function (playerOnEnemy) {
       playerOnEnemy.isMoving = false;
       playerOnEnemy.body.stop()
     }, null, this);
 
 
+    this.input.keyboard.on('keydown_SPACE', () => {
+      if(this.player.getCurrentTarget()) {
+        this.player.crush(this.player.getCurrentTarget())
+      }
+    });
 
     //used for testing
     this.input.keyboard.on('keydown_ENTER', () => {
@@ -146,6 +114,34 @@ export default class GameScene extends Phaser.Scene {
     house = this.scene.add.image(1300, 290, 'house');
 
     house.depth = house.y + 86;
+  }
+
+  addPlayer() {
+    this.player = new Player(this, 800, 364, 'skeleton')
+    this.player.setCircle(20, 40, 60)
+    this.scene.cameras.main.startFollow(this.player).setZoom(1)
+  }
+
+  addEnemies() {
+    for(let i = 0; i<4; i++) {
+      this.skeletons.push(this.scene.add.existing(new Skeleton(this, Phaser.Math.Between(300,1200), Phaser.Math.Between(100, 500), 'skeleton')));
+      this.skeletons[i].setCircle(30, 35, 60)
+      this.skeletons[i].on('clicked', clickHandler, this);
+      //this.skeletons[i].setCurrentTarget(this.player)
+      //this.skeletons[i].setInCombat(true)
+
+    }
+    //skeleton emits when clicked
+    this.input.on('gameobjectup', function (pointer, gameObject) {
+      gameObject.emit('clicked', gameObject);
+    }, this);
+
+    //what to do when skeleton emits 'clicked'
+    function clickHandler(enemy) {
+      this.player.setCurrentTarget(enemy);
+      enemy.setCurrentHp(0, 'heal');
+      this.player.setInCombat(true);
+    };
   }
 
   update (time, delta) {

@@ -6,7 +6,7 @@ export default class CharacterSheet extends Phaser.Physics.Arcade.Sprite {
     this.y = y;
     this.setTexture(texture);
     //TODO fix depth sorting, especially in map creator
-  
+
 
     scene.add.existing(this);
     scene.physics.add.existing(this);
@@ -18,7 +18,9 @@ export default class CharacterSheet extends Phaser.Physics.Arcade.Sprite {
     this.motion = 'idle';
     this.speed = 0.15;
     this.inCombat = false;
-    this.swingTimer = 0;
+    this.cooldowns = {
+      swing: 0,
+    }
     this.weaponTimer = 100;
     this.weaponDmg = 1.2;
     this.strength = 1.8;
@@ -33,29 +35,45 @@ export default class CharacterSheet extends Phaser.Physics.Arcade.Sprite {
     this.shouldUpdate = true;
 
   };
-  die() {
 
+  walking() {
+    this.anims.play('walk'+this.getFacing(), true);
+  }
+
+  idle() {
+    this.anims.play('idle'+this.getFacing(), true);
+  }
+
+  die() {
+    this.depth -= 64;
+    this.setVelocity(0)
     this.scene.registry.set('targetHps', 0)
+    this.getCurrentTarget().clearCurrentTarget();
     this.clearCurrentTarget();
     this.body.checkCollision.none = true;
     this.disableInteractive();
     this.setShouldUpdate(false);
     this.anims.play('die'+this.getFacing(), true)
   }
+
   getRadsToCurrentTarget() {
     if(this.currentTarget) {
       return Phaser.Math.Angle.BetweenY(this.x, this.y, this.currentTarget.x, this.currentTarget.y)
-    };
-  };
+    }
+  }
+
   setShouldUpdate(bool) {
     this.shouldUpdate = bool;
   }
+
   getShouldUpdate() {
     return this.shouldUpdate;
   }
+
   getFacing() {
     return this.facing;
-  };
+  }
+
   setFacing(rads) {
     //use switch
     if(rads < -2.7475 || rads > 2.7475) {
@@ -75,31 +93,58 @@ export default class CharacterSheet extends Phaser.Physics.Arcade.Sprite {
     } else if(rads < -1.9625 && rads > -2.7475) {
       this.facing = 'northWest';
     }
-  };
+  }
+
   morphine() {
     let amt = Phaser.Math.Between(1, this.getMaxHp());
     this.setCurrentHp(amt, 'heal');
-    console.log('healed for: ' + amt*10);
   }
+
+  crush(target) {
+    this.anims.play('attack'+this.getFacing());
+    let atp = this.getAttackPower();
+    let dmg = Phaser.Math.Between(4, 8) * atp;
+
+    //if the crush cooldown is === 0, crush the target and then reset cooldown
+    if(this.cooldowns.crush <= 0) {
+      this.getCurrentTarget().setCurrentTarget(this);
+      if(!this.getCurrentTarget().isInCombat()) {
+        this.getCurrentTarget().setInCombat(true);
+      }
+
+      if(this.willCrit()) {
+        let crit = dmg * 2;
+        target.setCurrentHp(crit, 'melee')
+
+      } else {
+        target.setCurrentHp(dmg, 'melee');
+      }
+    }
+    this.cooldowns.crush = 100;
+  }
+
   meleeSwing(target) {
+    this.anims.play('attack'+this.getFacing());
     let atp = this.getAttackPower();
     let dmg = Phaser.Math.Between(1,6)*atp ;
+    if(!this.getCurrentTarget().getCurrentTarget()) {
+      this.getCurrentTarget().setCurrentTarget(this);
+    }
+    if(!this.getCurrentTarget().isInCombat()) {
+      this.getCurrentTarget().setInCombat(true);
+    }
     if(Phaser.Math.Between(0, 100) < 34) {
-      console.log('miss');
+      return;
     } else {
       if(this.willCrit()) {
         let crit = dmg * 2;
         target.setCurrentHp(crit, 'melee')
-        //camera shake
-        console.log('crit for: ' + crit);
 
       } else {
-        console.log('swing does: '+dmg);
         target.setCurrentHp(dmg, 'melee');
       }
-      console.log(target.getCurrentHps());
     }
-    this.swingTimer = this.weaponTimer;
+    this.cooldowns.swing = this.weaponTimer;
   };
 
   willCrit() {
@@ -109,15 +154,19 @@ export default class CharacterSheet extends Phaser.Physics.Arcade.Sprite {
       return false;
     }
   };
+
   getAttackPower() {
     return this.str / 100;
   };
+
   getMaxHp() {
     return this.sta * .25;
   };
+
   getCurrentHps() {
     return this.currentHps;
   };
+
   setCurrentHp(val, type) {
     if (type === 'melee') {
       console.log('type: melee');
@@ -133,23 +182,28 @@ export default class CharacterSheet extends Phaser.Physics.Arcade.Sprite {
       this.currentHps += val;
     }
   };
+
   geCurrentLevel() {
     return this.lvl;
   };
+
   setCurrentTarget(target) {
     this.currentTarget = target;
     //this.currentTarget.setTint('0x7fff0000')
   };
+
   getCurrentTarget() {
     return this.currentTarget;
   };
+
   clearCurrentTarget() {
-    this.currentTarget.clearTint();
     this.currentTarget = undefined;
   };
+
   setInCombat(bool) {
     this.inCombat = bool;
   };
+
   isInCombat() {
     return this.inCombat;
   };

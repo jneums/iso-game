@@ -12,6 +12,8 @@ class BootScene extends Phaser.Scene {
       key: 'BootScene',
     });
   }
+
+  //loading up all assets before starting GameScene
   preload() {
     this.load.json('map', 'assets/isometric-grass-and-water.json');
     this.load.spritesheet('tiles', 'assets/isometric-grass-and-water.png', { frameWidth: 64, frameHeight: 64 });

@@ -25,8 +25,4 @@ export default class UIScene extends Phaser.Scene {
       this.targetHpText.setText('Enemy HP: ' + Math.round(data*10));
     }
   }
-
-  update() {
-
-  }
 };

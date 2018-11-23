@@ -21,6 +21,7 @@ export default class Skeleton extends CharacterSheet {
   };
 
   idlingCallback() {
+    //TODO add pathing for NPCs
     console.log("idling");
   };
 
@@ -39,6 +40,7 @@ export default class Skeleton extends CharacterSheet {
       this.swingTimer--;
       this.setFacing(this.getRadsToCurrentTarget());
       if(this.swingTimer <= 0) {
+        //TODO if swingtimer AND if in range
         this.anims.play('attack'+this.getFacing())
         this.meleeSwing(this.getCurrentTarget())
       };

@@ -49,9 +49,11 @@ export default class GameScene extends Phaser.Scene {
       let pointerPlusScrollY = pointer.y+this.cameras.cameras[0].scrollY;
       let angle = Phaser.Math.Angle.BetweenY(this.player.x, this.player.y, pointerPlusScrollX, pointerPlusScrollY);
 
+
+      //deselects current target
+      //TODO hide enemy hp bar when no current target
       if(this.player.getCurrentTarget()) {
         this.player.clearCurrentTarget();
-
       };
 
       this.player.setInCombat(false);
@@ -64,7 +66,7 @@ export default class GameScene extends Phaser.Scene {
     }, this);
 
     this.skeletons.map((child) => {
-      child.setCircle(20, 40, 60)
+      child.setCircle(30, 35, 60)
       child.on('clicked', clickHandler, this);
     });
 

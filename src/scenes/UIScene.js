@@ -27,8 +27,6 @@ export default class UIScene extends Phaser.Scene {
   }
 
   update() {
-    if(this.hpText === 'Enemy HP: 0'){
-      this.hpText = '';
-    }
+
   }
 };

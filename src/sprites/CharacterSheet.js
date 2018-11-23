@@ -5,6 +5,11 @@ export default class CharacterSheet extends Phaser.Physics.Arcade.Sprite {
     this.x = x;
     this.y = y;
     this.setTexture(texture);
+    //TODO fix depth sorting, especially in map creator
+  
+
+    scene.add.existing(this);
+    scene.physics.add.existing(this);
 
     this.str = Phaser.Math.Between(1,19);
     this.agi = Phaser.Math.Between(1,19);;

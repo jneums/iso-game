@@ -8,11 +8,7 @@ export default class Player extends CharacterSheet {
 
     this.str = 19;
     this.agi = 19;
-    //TODO fix depth sorting, especially in map creator
-    this.depth = y + 64;
 
-    scene.add.existing(this);
-    scene.physics.add.existing(this);
     scene.registry.set('playerHps', this.currentHps);
     this.gameOver = false;
     //initialize hp, updates ui right away.
@@ -34,11 +30,11 @@ export default class Player extends CharacterSheet {
       this.swingTimer--;
       if(this.isMoving) {
         this.anims.play('walk'+this.getFacing(), true);
+          this.depth = this.y + 64;
       } else if(this.isInCombat()) {
         if (Phaser.Math.Distance.Between(this.x, this.y, this.getCurrentTarget().x, this.getCurrentTarget().y) < 100 && this.isInCombat()) {
           this.getCurrentTarget().setCurrentTarget(this);
           this.isMoving = false;
-          console.log(this.swingTimer);
           if(this.swingTimer <= 0 && !this.getCurrentTarget().isDead()) {
             this.anims.play('attack'+this.getFacing())
             this.meleeSwing(this.getCurrentTarget());

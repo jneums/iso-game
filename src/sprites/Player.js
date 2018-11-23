@@ -31,16 +31,19 @@ export default class Player extends CharacterSheet {
 
   update() {
     if(!this.isDead()) {
+      this.swingTimer--;
       if(this.isMoving) {
         this.anims.play('walk'+this.getFacing(), true);
       } else if(this.isInCombat()) {
-        if (Phaser.Math.Distance.Between(this.x, this.y, this.getCurrentTarget().x, this.getCurrentTarget().y) < 75 && this.isInCombat()) {
+        if (Phaser.Math.Distance.Between(this.x, this.y, this.getCurrentTarget().x, this.getCurrentTarget().y) < 100 && this.isInCombat()) {
           this.getCurrentTarget().setCurrentTarget(this);
-
-          this.swingTimer--;
-          if(this.swingTimer <= 0 && !this.currentTarget.isDead()) {
+          this.isMoving = false;
+          console.log(this.swingTimer);
+          if(this.swingTimer <= 0 && !this.getCurrentTarget().isDead()) {
             this.anims.play('attack'+this.getFacing())
             this.meleeSwing(this.getCurrentTarget());
+          } else if(this.getCurrentTarget().isDead()) {
+            this.setInCombat(false);
           }
         }
       } else {

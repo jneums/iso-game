@@ -12,7 +12,26 @@ export default class Skeleton extends CharacterSheet {
     this.depth = y + 64;
     this.setInteractive();
     this.weaponTimer = 150
+    this.idling = scene.time.addEvent({
+      delay: 5000,
+      callback: this.idlingCallback,
+      callbackScope: this,
+      loop: true,
+    })
+  };
 
+  idlingCallback() {
+    console.log("idling");
+  };
+
+  setCurrentHp(val, type) {
+    if (type === 'melee') {
+      console.log('type: melee');
+      this.currentHps -= val;
+    } else if (type === 'heal') {
+      this.currentHps += val;
+    }
+    this.scene.registry.set('targetHps', this.currentHps)
   };
 
   update() {
@@ -25,6 +44,7 @@ export default class Skeleton extends CharacterSheet {
       };
     } else {
       this.anims.play('idle'+this.getFacing(), true)
+      this.idling;
     }
 
   }

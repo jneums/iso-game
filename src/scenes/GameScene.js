@@ -51,7 +51,8 @@ export default class GameScene extends Phaser.Scene {
 
       if(this.player.getCurrentTarget()) {
         this.player.clearCurrentTarget();
-      }
+
+      };
 
       this.player.setInCombat(false);
 
@@ -74,6 +75,7 @@ export default class GameScene extends Phaser.Scene {
     //if enemy is clicked
     function clickHandler(enemy) {
       this.player.setCurrentTarget(enemy);
+      enemy.setCurrentHp(0, 'heal');
       this.player.setInCombat(true);
       enemy.setInCombat(true);
     };
@@ -85,15 +87,15 @@ export default class GameScene extends Phaser.Scene {
     }, null, this);
 
     this.physics.add.overlap(this.player, this.skeletons, function (playerOnEnemy) {
-      playerOnEnemy.body.stop()
       playerOnEnemy.isMoving = false;
+      playerOnEnemy.body.stop()
     }, null, this);
 
 
 
     //used for testing
     this.input.keyboard.on('keydown_ENTER', () => {
-      console.log(this);
+      this.player.morphine();
     });
   }
 

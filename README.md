@@ -1,6 +1,12 @@
-# Phaser 3 Webpack Project Template
+# Phaser 3 Isometric RPG
 
-A Phaser 3 Project Template
+A Phaser 3 based isometric role playing game.
+Will either be fantasy or science fiction, still need to decide
+and start looking for sprites.
+
+Mostly working on the combat and movement mechanics first.
+would like to create a very short scenario to test mechanics,
+and work on a full story and design after that.
 
 ### Requirements
 

@@ -2,6 +2,7 @@ export default class CharacterSheet extends Phaser.Physics.Arcade.Sprite {
   constructor(scene, x, y, texture) {
     super(scene, x, y, texture);
 
+    this.type = texture;
     this.x = x;
     this.y = y;
     this.setTexture(texture);
@@ -37,11 +38,11 @@ export default class CharacterSheet extends Phaser.Physics.Arcade.Sprite {
   };
 
   walking() {
-    this.anims.play('walk'+this.getFacing(), true);
+    this.anims.play(this.type + '_walk_' + this.getFacing(), true);
   }
 
   idle() {
-    this.anims.play('idle'+this.getFacing(), true);
+    this.anims.play(this.type + '_idle_' + this.getFacing(), true);
   }
 
   die() {
@@ -53,7 +54,7 @@ export default class CharacterSheet extends Phaser.Physics.Arcade.Sprite {
     this.body.checkCollision.none = true;
     this.disableInteractive();
     this.setShouldUpdate(false);
-    this.anims.play('die'+this.getFacing(), true)
+    this.anims.play(this.type + '_die_' + this.getFacing(), true)
   }
 
   getRadsToCurrentTarget() {
@@ -124,7 +125,7 @@ export default class CharacterSheet extends Phaser.Physics.Arcade.Sprite {
   }
 
   meleeSwing(target) {
-    this.anims.play('attack'+this.getFacing());
+    this.anims.play('skeleton_attack_'+this.getFacing());
     let atp = this.getAttackPower();
     let dmg = Phaser.Math.Between(1,6)*atp ;
     if(!this.getCurrentTarget().getCurrentTarget()) {

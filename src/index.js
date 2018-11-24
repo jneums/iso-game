@@ -15,6 +15,7 @@ class BootScene extends Phaser.Scene {
 
   //loading up all assets before starting GameScene
   preload() {
+    this.load.multiatlas('knight', 'assets/antler-knight.json', 'assets')
     this.load.json('map', 'assets/isometric-grass-and-water.json');
     this.load.spritesheet('tiles', 'assets/isometric-grass-and-water.png', { frameWidth: 64, frameHeight: 64 });
     this.load.spritesheet('skeleton', 'assets/skeleton8.png', { frameWidth: 128, frameHeight: 128 });
@@ -38,7 +39,7 @@ var config = {
   physics: {
     default: 'arcade',
     arcade: {
-        debug: false,
+        debug: true,
         gravity: { y: 0 }
     }
   },

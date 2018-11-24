@@ -35,7 +35,8 @@ export default class Player extends CharacterSheet {
       this.cooldowns.swing--;
       this.cooldowns.crush--;
       if(this.isMoving) {
-        this.walking();
+        this.anims.play('knight_west_walk', true)
+        //this.walking();
         this.depth = this.y + 64;
       } else if(this.isInCombat() && this.getCurrentTarget()) {
         this.setFacing(this.getRadsToCurrentTarget());

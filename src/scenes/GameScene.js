@@ -7,6 +7,7 @@ export default class GameScene extends Phaser.Scene {
     this.tileWidthHalf;
     this.tileHeightHalf;
 
+    this.knight;
     this.player;
     this.skeletons = [];
 
@@ -15,9 +16,6 @@ export default class GameScene extends Phaser.Scene {
     this.d = 0;
     this.scene;
   }
-  preload () {
-
-  }
 
   create () {
     this.scene = this.scene.scene
@@ -25,7 +23,8 @@ export default class GameScene extends Phaser.Scene {
     this.placeHouses();
     this.addPlayer();
     this.addEnemies();
-
+    
+    this.knight = this.add.image(100, 100, 'knight', 'E_Left0378.png')
     this.moveTarget = this.physics.add.image(25, 25, 'star');
     this.moveTarget.setCircle(20, 0, -5).setVisible(false).setScale(.75);
 
@@ -67,6 +66,9 @@ export default class GameScene extends Phaser.Scene {
     this.input.keyboard.on('keydown_ENTER', () => {
       this.player.morphine();
     });
+
+
+    console.log(this.scene.anims);
   }
 
   //building a map

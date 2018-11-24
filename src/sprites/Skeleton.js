@@ -9,21 +9,15 @@ export default class Skeleton extends CharacterSheet {
     scene.add.existing(this);
     scene.physics.add.existing(this);
 
-    this.depth = y + 64;
     this.setInteractive();
     this.weaponTimer = 150
-    this.idling = scene.time.addEvent({
-      delay: 5000,
-      callback: this.idlingCallback,
-      callbackScope: this,
-      loop: true,
-    })
+
   };
 
   moveToAttacker(attacker) {
     this.scene.physics.moveToObject(this, attacker, 100);
   }
-  
+
   setCurrentHp(val, type) {
     if (type === 'melee') {
       this.currentHps -= val;

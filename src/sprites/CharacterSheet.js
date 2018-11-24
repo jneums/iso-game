@@ -2,10 +2,11 @@ export default class CharacterSheet extends Phaser.Physics.Arcade.Sprite {
   constructor(scene, x, y, texture) {
     super(scene, x, y, texture);
 
-    this.type = texture;
     this.x = x;
     this.y = y;
     this.setTexture(texture);
+    this.type = texture;
+    this.depth = this.y + 64;
     //TODO fix depth sorting, especially in map creator
 
 
@@ -38,6 +39,8 @@ export default class CharacterSheet extends Phaser.Physics.Arcade.Sprite {
   };
 
   walking() {
+
+    this.depth = this.y + 64;
     this.anims.play(this.type + '_walk_' + this.getFacing(), true);
   }
 
@@ -125,7 +128,7 @@ export default class CharacterSheet extends Phaser.Physics.Arcade.Sprite {
   }
 
   meleeSwing(target) {
-    this.anims.play('skeleton_attack_'+this.getFacing());
+    this.anims.play(this.type+'_attack_'+this.getFacing());
     let atp = this.getAttackPower();
     let dmg = Phaser.Math.Between(1,6)*atp ;
     if(!this.getCurrentTarget().getCurrentTarget()) {

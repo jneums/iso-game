@@ -4,23 +4,25 @@ export default class Player extends CharacterSheet {
   constructor (scene, x, y, texture) {
     super(scene, x, y, texture);
 
-    this.setScale(.75);
-
+    this.type = 'knight';
     this.str = 19;
     this.agi = 19;
     this.currentHps = 100;
 
+    //add hp event watcher and sync ui with currenthp
     scene.registry.set('playerHps', this.currentHps);
-    this.gameOver = false;
-    //initialize hp, updates ui right away.
     this.setCurrentHp(0, 'heal');
+
+    this.gameOver = false;
+
     this.cooldowns = {
       swing: 0,
       crush: 0,
     }
-
+    this.weaponTimer = 300;
   };
 
+  //shadow the setCurrentHp in the CharacterSheet class
   setCurrentHp(val, type) {
     if (type === 'melee') {
       this.currentHps -= val;
@@ -35,9 +37,7 @@ export default class Player extends CharacterSheet {
       this.cooldowns.swing--;
       this.cooldowns.crush--;
       if(this.isMoving) {
-        this.anims.play('knight_west_walk', true)
-        //this.walking();
-        this.depth = this.y + 64;
+        this.walking();
       } else if(this.isInCombat() && this.getCurrentTarget()) {
         this.setFacing(this.getRadsToCurrentTarget());
         if (Phaser.Math.Distance.Between(this.x, this.y, this.getCurrentTarget().x, this.getCurrentTarget().y) < 100) {

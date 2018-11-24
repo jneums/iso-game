@@ -1,6 +1,8 @@
 import Skeleton from '../sprites/Skeleton.js';
 import Player from '../sprites/Player.js';
 
+
+
 export default class GameScene extends Phaser.Scene {
   constructor() {
     super('GameScene');
@@ -18,13 +20,13 @@ export default class GameScene extends Phaser.Scene {
   }
 
   create () {
+
     this.scene = this.scene.scene
     this.buildMap();
     this.placeHouses();
     this.addPlayer();
     this.addEnemies();
-    
-    this.knight = this.add.image(100, 100, 'knight', 'E_Left0378.png')
+
     this.moveTarget = this.physics.add.image(25, 25, 'star');
     this.moveTarget.setCircle(20, 0, -5).setVisible(false).setScale(.75);
 
@@ -119,8 +121,9 @@ export default class GameScene extends Phaser.Scene {
   }
 
   addPlayer() {
-    this.player = new Player(this, 800, 364, 'skeleton')
-    this.player.setCircle(20, 40, 60)
+    this.player = new Player(this, 800, 364, 'knight')
+    this.player.setScale(.5)
+    this.player.setCircle(80, 120, 160)
     this.scene.cameras.main.startFollow(this.player).setZoom(1)
   }
 

@@ -6,6 +6,7 @@ import GameScene from './scenes/GameScene.js';
 import UIScene from './scenes/UIScene.js';
 
 
+
 class BootScene extends Phaser.Scene {
   constructor() {
     super({

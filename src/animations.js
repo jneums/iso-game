@@ -1,53 +1,48 @@
+
+
 function createAnimations(scene) {
-  //  Our player animations, turning, walking left and walking right.
-  scene.anims.create({
-    key: 'knight_west_walk',
-    frames: scene.anims.generateFrameNames('knight',
-                {
-                  start: 0,
-                  end: 16,
-                  zeroPad: 2,
-                  prefix: 'knight_west_walk',
-                  suffix: '.png'
-                }),
-
-    frameRate: 8,
-    repeat: -1,
-
-    })
-let textures = [ 'skeleton' ];
+  let textures = [ 'skeleton' ];
   for (let i = 0; i < 8; i++) {
     for (let j = 0; j < motions.length; j++) {
       scene.anims.create({
         key: 'skeleton' + '_' + motions[j] + '_' + directionNames[i],
         frames: scene.anims.generateFrameNames('skeleton',
-                    {
-                      start: anims[motions[j]].startFrame + directions[directionNames[i]].offset,
-                      end: anims[motions[j]].endFrame + directions[directionNames[i]].offset,
-                    }),
+        {
+          start: anims[motions[j]].startFrame + directions[directionNames[i]].offset,
+          end: anims[motions[j]].endFrame + directions[directionNames[i]].offset,
+        }),
 
         frameRate: anims[motions[j]].frameRate,
         repeat: anims[motions[j]].repeat,
         yoyo: anims[motions[j]].yoyo,
-        })
-      }
-
+      })
     }
+    for (let j = 0; j < knightMotions.length; j++) {
+      scene.anims.create({
+        key: 'knight' + '_' + knightMotions[j] + '_' + directionNames[i],
+        frames: scene.anims.generateFrameNames('knight', {
+          start: knightAnims[knightMotions[j]].startFrame,
+          end: knightAnims[knightMotions[j]].endFrame,
+          zeroPad: 2,
+          prefix: 'knight_'+directionNames[i]+'_' + knightMotions[j],
+          suffix: '.png',
+        }),
 
+        frameRate: anims[motions[j]].frameRate,
+        repeat: anims[motions[j]].repeat,
+        yoyo: anims[motions[j]].yoyo,
+      })
+    }
+  }
+}
 
-
- }
-
-//    140-200
-//walk 0-16, run 17-27, idle 28-40, attack 41-58
 var knightAnims = {
   idle: {
-    startFrame: 28,
-    endFrame: 40,
+    startFrame: 0,
+    endFrame: 12,
     frameRate: 3,
     repeat: -1,
     yoyo: true,
-
   },
   walk: {
     startFrame: 0,
@@ -56,8 +51,14 @@ var knightAnims = {
     repeat: -1,
   },
   attack: {
-    startFrame: 41,
-    endFrame: 58,
+    startFrame: 0,
+    endFrame: 17,
+    frameRate: 10,
+    repeat: 0,
+  },
+  run: {
+    startFrame: 0,
+    endFrame: 10,
     frameRate: 10,
     repeat: 0,
   },
@@ -115,4 +116,4 @@ var directionNames = Object.keys(directions)
 var motions = Object.keys(anims);
 var knightMotions = Object.keys(knightAnims);
 
-export { createAnimations, directionNames, motions };
+export { createAnimations, directionNames, motions, sortedAntler };

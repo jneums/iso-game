@@ -53,7 +53,7 @@ var knightAnims = {
   attack: {
     startFrame: 0,
     endFrame: 17,
-    frameRate: 10,
+    frameRate: 20,
     repeat: 0,
   },
   run: {

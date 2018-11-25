@@ -8,6 +8,7 @@ export default class Player extends CharacterSheet {
     this.str = 19;
     this.agi = 19;
     this.currentHps = 100;
+    this.depth = this.y + 84
 
     //add hp event watcher and sync ui with currenthp
     scene.registry.set('playerHps', this.currentHps);
@@ -19,7 +20,7 @@ export default class Player extends CharacterSheet {
       swing: 0,
       crush: 0,
     }
-    this.weaponTimer = 300;
+    this.weaponTimer = 100;
   };
 
   //shadow the setCurrentHp in the CharacterSheet class
@@ -37,7 +38,7 @@ export default class Player extends CharacterSheet {
       this.cooldowns.swing--;
       this.cooldowns.crush--;
       if(this.isMoving) {
-        this.walking();
+        this.running();
       } else if(this.isInCombat() && this.getCurrentTarget()) {
         this.setFacing(this.getRadsToCurrentTarget());
         if (Phaser.Math.Distance.Between(this.x, this.y, this.getCurrentTarget().x, this.getCurrentTarget().y) < 100) {

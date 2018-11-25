@@ -10,7 +10,7 @@ export default class Skeleton extends CharacterSheet {
     scene.physics.add.existing(this);
 
     this.setInteractive();
-    this.weaponTimer = 150
+    this.weaponTimer = 30
 
   };
 

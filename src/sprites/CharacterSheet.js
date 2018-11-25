@@ -37,7 +37,10 @@ export default class CharacterSheet extends Phaser.Physics.Arcade.Sprite {
     this.shouldUpdate = true;
 
   };
-
+  running() {
+    this.depth = this.y + 64;
+    this.anims.play(this.type + '_run_' + this.getFacing(), true);
+  }
   walking() {
 
     this.depth = this.y + 64;

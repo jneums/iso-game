@@ -36,6 +36,8 @@ function createAnimations(scene) {
   }
 }
 
+
+
 var knightAnims = {
   idle: {
     startFrame: 0,

@@ -7,7 +7,7 @@ export default class Player extends CharacterSheet {
     this.type = 'knight';
     this.str = 19;
     this.agi = 19;
-    this.currentHps = 100;
+    this.currentHps = 10;
     this.depth = this.y + 84
 
     //add hp event watcher and sync ui with currenthp
@@ -55,7 +55,8 @@ export default class Player extends CharacterSheet {
         this.setCurrentHp(.0009, 'heal')
       }
     } else {
-      this.anims.play('die'+this.getFacing());
+      this.die();
+      this.scene.cameras.main.fade(1000, 0,0,0)
       console.log("you died");
       this.gameOver = true;
     }

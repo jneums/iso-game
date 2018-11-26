@@ -15,13 +15,24 @@ export default class GameScene extends Phaser.Scene {
 
     this.moveTarget;
 
+
+
     this.d = 0;
     this.scene;
+
   }
 
   create () {
-
     this.scene = this.scene.scene
+
+    this.skeletonSpawn = this.scene.time.addEvent({
+      delay: 250000,
+      callback: this.addEnemies,
+      callbackScope: this,
+      repeat: 50,
+    })
+
+    this.skeletonSpawn;
     this.buildMap();
     this.placeHouses();
     this.addPlayer();
@@ -37,9 +48,9 @@ export default class GameScene extends Phaser.Scene {
       let pointerPlusScrollY = pointer.y+this.cameras.cameras[0].scrollY;
       let angle = Phaser.Math.Angle.BetweenY(this.player.x, this.player.y, pointerPlusScrollX, pointerPlusScrollY);
 
+      this.player.setFacing(angle);
       this.moveTarget.setPosition(pointerPlusScrollX, pointerPlusScrollY )
 
-      this.player.setFacing(angle);
       this.scene.physics.moveToObject(this.player, this.moveTarget, 100);
       this.player.isMoving = true;
     }, this);
@@ -69,8 +80,6 @@ export default class GameScene extends Phaser.Scene {
       this.player.morphine();
     });
 
-
-    console.log(this.scene.anims);
   }
 
   //building a map
@@ -122,15 +131,15 @@ export default class GameScene extends Phaser.Scene {
 
   addPlayer() {
     this.player = new Player(this, 800, 364, 'knight')
-    this.player.setScale(.5)
-    this.player.setCircle(80, 120, 160)
+//    this.player.setScale()
+    this.player.setCircle(150, 60, 80)
     this.scene.cameras.main.startFollow(this.player).setZoom(1)
   }
 
   addEnemies() {
-    for(let i = 0; i<4; i++) {
+   for(let i = 0; i<4; i++) {
       this.skeletons.push(this.scene.add.existing(new Skeleton(this, Phaser.Math.Between(300,1200), Phaser.Math.Between(100, 500), 'skeleton')));
-      this.skeletons[i].setCircle(30, 35, 60)
+      this.skeletons[i].setCircle(50, 15, 20)
       this.skeletons[i].on('clicked', clickHandler, this);
       //this.skeletons[i].setCurrentTarget(this.player)
       //this.skeletons[i].setInCombat(true)

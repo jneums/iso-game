@@ -23,7 +23,6 @@ export default class CharacterSheet extends Phaser.Physics.Arcade.Sprite {
     this.cooldowns = {
       swing: 0,
     }
-    this.weaponTimer = 100;
     this.weaponDmg = 1.2;
     this.strength = 1.8;
     this.chanceToMiss = .15;
@@ -151,6 +150,7 @@ export default class CharacterSheet extends Phaser.Physics.Arcade.Sprite {
         target.setCurrentHp(dmg, 'melee');
       }
     }
+  
     this.cooldowns.swing = this.weaponTimer;
   };
 

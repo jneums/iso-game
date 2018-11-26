@@ -10,7 +10,7 @@ export default class Skeleton extends CharacterSheet {
     scene.physics.add.existing(this);
 
     this.setInteractive();
-    this.weaponTimer = 30
+    this.weaponTimer = 50;
 
   };
 
@@ -31,7 +31,7 @@ export default class Skeleton extends CharacterSheet {
   update() {
     this.cooldowns.swing--;
 
-    if(Phaser.Math.Distance.Between(this.x, this.y, this.scene.player.x, this.scene.player.y) < 200) {
+    if(Phaser.Math.Distance.Between(this.x, this.y, this.scene.player.x, this.scene.player.y) < 500) {
       this.setInCombat(true);
       this.setCurrentTarget(this.scene.player);
     }

@@ -5,9 +5,6 @@ export default class Player extends CharacterSheet {
     super(scene, x, y, texture);
 
     this.type = 'knight';
-    this.str = 19;
-    this.agi = 19;
-    this.currentHps = 10;
     this.depth = this.y + 84
 
     //add hp event watcher and sync ui with currenthp
@@ -20,8 +17,48 @@ export default class Player extends CharacterSheet {
       swing: 0,
       crush: 0,
     }
-    this.weaponTimer = 100;
+
+    this.equipped = {
+      weapon: {
+        equipped: true,
+        type: 'twoHandedSword',
+        name: 'Hand of Justice',
+        dps: 1.2,
+        speed: 1.8,
+        value: 10000,
+        stats: {
+          str: 3,
+          agi: 2,
+          sta: 10,
+          crit: .05,
+        },
+      },
+      armor: {
+        equipped: true,
+        slot: 'chest',
+        type: 'plate',
+        name: 'Plate of the Abyss',
+        armor: 10,
+        value: 100000,
+        stats: {
+          str: 4,
+          agi: 3,
+          sta: 15,
+
+        },
+      },
+    }
+    this.str = 19 + this.calculateStats(this.equipped, 'str')
+    this.sta = 19 + this.calculateStats(this.equipped, 'sta');
+    this.agi = 19 + this.calculateStats(this.equipped, 'agi');
+    this.weaponDmg = this.equipped.weapon.dps;
+    this.chanceToMiss = .15;
+    this.chanceToCrit = .15 + this.calculateStats(this.equipped, 'crit');
+    this.weaponTimer = this.equipped.weapon.speed * 60;
+
+    this.currentHps = 1000;
   };
+
 
   //shadow the setCurrentHp in the CharacterSheet class
   setCurrentHp(val, type) {

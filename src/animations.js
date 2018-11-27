@@ -106,10 +106,10 @@ var anims = {
     repeat: 0,
   },
   shoot: {
-    startFrame: 28,
-    endFrame: 32,
+    startFrame: 30,
+    endFrame: 31,
     frameRate: 5,
-    repeat: 1,
+    repeat: 0,
     yoyo: true,
   },
 };

@@ -12,6 +12,43 @@ export default class Skeleton extends CharacterSheet {
     this.setInteractive();
     this.weaponTimer = 50;
 
+    //quick start of inventory system.
+    //items will be in very large json
+    //and referenced here.
+    this.equipped = {
+      weapon: {
+        name: 'Undead Revenger',
+        dps: 0.8,
+        speed: 60,
+        value: 1000,
+        stats: {
+          str: 2,
+          agi: 1,
+          sta: 6,
+          crit: .08,
+        },
+      },
+      armor: {
+        name: 'Deaths Grasp',
+        armor: 6,
+        value: 1000,
+        stats: {
+          str: 3,
+          agi: 2,
+          sta: 14,
+
+        },
+      }
+    }
+    this.str = 9 + this.calculateStats(this.equipped, 'str')
+    this.sta = 9 + this.calculateStats(this.equipped, 'sta');
+    this.agi = 9 + this.calculateStats(this.equipped, 'agi');
+
+    this.currentHps = this.getMaxHp();
+    this.weaponDmg = this.equipped.weapon.dps;
+    this.chanceToMiss = .15;
+    this.chanceToCrit = .15 + this.calculateStats(this.equipped, 'crit');
+
   };
 
   moveToAttacker(attacker) {

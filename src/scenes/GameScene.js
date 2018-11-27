@@ -1,4 +1,5 @@
 import Skeleton from '../sprites/Skeleton.js';
+import ArcherSkeleton from '../sprites/ArcherSkeleton.js';
 import Player from '../sprites/Player.js';
 
 
@@ -6,16 +7,16 @@ import Player from '../sprites/Player.js';
 export default class GameScene extends Phaser.Scene {
   constructor() {
     super('GameScene');
+    //half of the tile width for isometric measurements
     this.tileWidthHalf;
     this.tileHeightHalf;
-
-    this.knight;
+    //player object
     this.player;
+    //array of enemies
     this.skeletons = [];
-
+    //invisible object to move toward,
+    //stops player when he runs into it
     this.moveTarget;
-
-
 
     this.d = 0;
     this.scene;
@@ -24,20 +25,19 @@ export default class GameScene extends Phaser.Scene {
 
   create () {
     this.scene = this.scene.scene
-
+    //spawn skeletons infinitely
     this.skeletonSpawn = this.scene.time.addEvent({
-      delay: 250000,
+      delay: 50000,
       callback: this.addEnemies,
       callbackScope: this,
-      repeat: 50,
+      repeat: -1,
     })
-
-    this.skeletonSpawn;
+    //set up scene
     this.buildMap();
     this.placeHouses();
     this.addPlayer();
     this.addEnemies();
-
+    //set up click to move target
     this.moveTarget = this.physics.add.image(25, 25, 'star');
     this.moveTarget.setCircle(20, 0, -5).setVisible(false).setScale(.75);
 
@@ -55,8 +55,6 @@ export default class GameScene extends Phaser.Scene {
       this.player.isMoving = true;
     }, this);
 
-
-
     //stop the player at the moveTarget, or at the hitbox of the enemy
     this.physics.add.overlap(this.player, this.moveTarget, function (playerOnMoveTarget) {
       playerOnMoveTarget.isMoving = false;
@@ -68,14 +66,13 @@ export default class GameScene extends Phaser.Scene {
       playerOnEnemy.body.stop()
     }, null, this);
 
-
+    //some keyboard events, used for testing atm
     this.input.keyboard.on('keydown_SPACE', () => {
       if(this.player.getCurrentTarget()) {
         this.player.crush(this.player.getCurrentTarget())
       }
     });
 
-    //used for testing
     this.input.keyboard.on('keydown_ENTER', () => {
       this.player.morphine();
     });
@@ -121,30 +118,28 @@ export default class GameScene extends Phaser.Scene {
 
   placeHouses() {
     var house = this.scene.add.image(240, 370, 'house');
-
     house.depth = house.y + 86;
-
     house = this.scene.add.image(1300, 290, 'house');
-
     house.depth = house.y + 86;
   }
 
   addPlayer() {
     this.player = new Player(this, 800, 364, 'knight')
-//    this.player.setScale()
+    this.player.setScale(.50)
     this.player.setCircle(150, 60, 80)
     this.scene.cameras.main.startFollow(this.player).setZoom(1)
   }
 
   addEnemies() {
-   for(let i = 0; i<4; i++) {
-      this.skeletons.push(this.scene.add.existing(new Skeleton(this, Phaser.Math.Between(300,1200), Phaser.Math.Between(100, 500), 'skeleton')));
-      this.skeletons[i].setCircle(50, 15, 20)
-      this.skeletons[i].on('clicked', clickHandler, this);
-      //this.skeletons[i].setCurrentTarget(this.player)
-      //this.skeletons[i].setInCombat(true)
+    //add enemies
+    for(let i = 0; i<4; i++) {
+       this.skeletons.push(this.scene.add.existing(new Skeleton(this, Phaser.Math.Between(300,1200), Phaser.Math.Between(100, 500), 'skeleton')));
+       this.skeletons[i].setCircle(50, 15, 20)
+       this.skeletons[i].on('clicked', clickHandler, this);
+       //this.skeletons[i].setCurrentTarget(this.player)
+       //this.skeletons[i].setInCombat(true)
 
-    }
+     }
     //skeleton emits when clicked
     this.input.on('gameobjectup', function (pointer, gameObject) {
       gameObject.emit('clicked', gameObject);

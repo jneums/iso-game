@@ -13,9 +13,6 @@ export default class CharacterSheet extends Phaser.Physics.Arcade.Sprite {
     scene.add.existing(this);
     scene.physics.add.existing(this);
 
-    this.str = Phaser.Math.Between(1,19);
-    this.agi = Phaser.Math.Between(1,19);;
-    this.sta = Phaser.Math.Between(1,19);;
 
     this.motion = 'idle';
     this.speed = 0.15;
@@ -23,11 +20,7 @@ export default class CharacterSheet extends Phaser.Physics.Arcade.Sprite {
     this.cooldowns = {
       swing: 0,
     }
-    this.weaponDmg = 1.2;
-    this.strength = 1.8;
-    this.chanceToMiss = .15;
-    this.chanceToCrit = .15;
-    this.currentHps = this.getMaxHp();
+
     this.currentTarget = undefined;
     this.overkill = 0;
     this.overheal = 0;
@@ -36,6 +29,15 @@ export default class CharacterSheet extends Phaser.Physics.Arcade.Sprite {
     this.shouldUpdate = true;
 
   };
+
+  calculateStats(equipped, stat) {
+  //combine all the stat from equipped items
+    return Object.keys(equipped).map(el => equipped[el].stats[stat])
+                                .reduce((acc, item) => {
+                                  return acc + item;
+                                })
+  }
+
   running() {
     this.depth = this.y + 64;
     this.anims.play(this.type + '_run_' + this.getFacing(), true);
@@ -59,7 +61,8 @@ export default class CharacterSheet extends Phaser.Physics.Arcade.Sprite {
     this.body.checkCollision.none = true;
     this.disableInteractive();
     this.setShouldUpdate(false);
-    this.anims.play(this.type + '_die_' + this.getFacing(), true)
+    //no player die animation yet
+    this.anims.play('skeleton' + '_die_' + this.getFacing(), true)
   }
 
   getRadsToCurrentTarget() {
@@ -131,8 +134,7 @@ export default class CharacterSheet extends Phaser.Physics.Arcade.Sprite {
 
   meleeSwing(target) {
     this.anims.play(this.type+'_attack_'+this.getFacing());
-    let atp = this.getAttackPower();
-    let dmg = Phaser.Math.Between(1,6)*atp ;
+    let dmg = Phaser.Math.Between(1,6) * this.getAttackPower();
     if(!this.getCurrentTarget().getCurrentTarget()) {
       this.getCurrentTarget().setCurrentTarget(this);
     }
@@ -150,7 +152,7 @@ export default class CharacterSheet extends Phaser.Physics.Arcade.Sprite {
         target.setCurrentHp(dmg, 'melee');
       }
     }
-  
+
     this.cooldowns.swing = this.weaponTimer;
   };
 
@@ -167,7 +169,7 @@ export default class CharacterSheet extends Phaser.Physics.Arcade.Sprite {
   };
 
   getMaxHp() {
-    return this.sta * .25;
+    return this.sta;
   };
 
   getCurrentHps() {
